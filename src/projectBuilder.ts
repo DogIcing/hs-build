@@ -1,6 +1,5 @@
-import { v4 } from "uuid";
 import { getHSObject } from "./data/objects";
-import { eventParams } from "./globals";
+import { abilities, eventParams } from "./globals";
 import { Scene } from "./scene";
 import { getBlock } from "./data/blocks";
 import { getRule } from "./data/rule";
@@ -23,8 +22,18 @@ export class ProjectBuilder {
                 blockType: eventParam.blockType,
                 objectId: eventParam.objectId
             })),
+            abilities: abilities.map(ability => ({
+                blocks: ability.blocks.map(block => ({
+                    parameters: block.parameters ?? [],
+                    //block_class: "method", todo
+                    type: getBlock(block.type).id,
+                    description: getBlock(block.type).name
+                })),
+                createdAt: ability.createdAt,
+                abilityID: ability.id,
+                name: ability.name
+            })),
             rules: [],
-            abilities: []
         }
 
         this.scenes.forEach(scene => {
@@ -51,27 +60,14 @@ export class ProjectBuilder {
                 });
 
                 object.rules.forEach(rule => {
-                    const abilityId = v4();
-
                     output.rules.push({
                         ruleBlockType: getRule(rule.type).id,
                         type: getRule(rule.type).id, // I cant seem to find an example where these are different?
-                        abilityID: abilityId,
+                        abilityID: rule.ability.id,
                         id: rule.id,
                         parameters: rule.parameters ?? [],
                         objectID: rule.objectId,
                         name: "", // todo
-                    });
-
-                    output.abilities.push({
-                        createdAt: 686548561.268828, // todo
-                        blocks: rule.blocks.map(block => ({
-                            parameters: block.parameters ?? [],
-                            //block_class: "method", todo
-                            type: getBlock(block.type).id,
-                            description: getBlock(block.type).name
-                        })),
-                        abilityID: abilityId
                     });
                 });
             });

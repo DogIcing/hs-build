@@ -1,3 +1,4 @@
+import { Ability } from "./ability"
 import { EventParameterType } from "./data/eventParameterType"
 import { Rule } from "./rule"
 
@@ -9,3 +10,5 @@ export const eventParams: {
 }[] = []
 
 export const rules: Rule[] = []
+
+export const abilities: Ability[] = []

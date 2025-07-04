@@ -8,8 +8,9 @@ import { v4 } from "uuid";
 import { getRule, RuleType } from "./data/rule";
 import { parameterBuilder } from "./parameter";
 import { ParameterType } from "./data/parameterType";
+import { Ability, AbilityBlocksBuilder, AbilityCollectionBuilder } from "./ability";
 
-export type RuleBlocksBuilder = (blockCollectionBuilder: BlockCollectionBuilder) => void;
+export type RuleAbilitiesBuilder = (abilityCollectionBuilder: AbilityCollectionBuilder) => void;
 
 type ObjectParameter = HSObject | EventParameterType.SELF | EventParameterType.ORIGINAL_OBJECT;
 
@@ -21,10 +22,10 @@ export class RuleCollectionBuilder {
         this.objectId = objectId;
     }
 
-    whenRule(type: EventOperatorType, blockBuilder: RuleBlocksBuilder, parameters?: any) {
+    whenRule(type: EventOperatorType, blockBuilder: AbilityBlocksBuilder, parameters?: any) {
         const builder = new BlockCollectionBuilder();
         blockBuilder(builder);
-        this.rules.push(new Rule('WHEN', this.objectId, builder.blocks, [
+        this.rules.push(new Rule('WHEN', this.objectId, new Ability(builder.blocks), [
             parameterBuilder(ParameterType.Event, '', '', {
                 type: getEventOperator(type).id,
                 description: getEventOperator(type).name,
@@ -35,28 +36,28 @@ export class RuleCollectionBuilder {
     }
 
 
-    gameStarts = (blockBuilder: RuleBlocksBuilder) => this.whenRule('GAME_STARTS', blockBuilder);
+    gameStarts = (blockBuilder: AbilityBlocksBuilder) => this.whenRule('GAME_STARTS', blockBuilder);
 
-    isTapped = (obj: ObjectParameter, blockBuilder: RuleBlocksBuilder) => this.whenRule('IS_TAPPED', blockBuilder, [{
+    isTapped = (obj: ObjectParameter, blockBuilder: AbilityBlocksBuilder) => this.whenRule('IS_TAPPED', blockBuilder, [{
         defaultValue: '', value: '', key: '', type: 50,
         variable: obj instanceof HSObject ? registerEventParameter(EventParameterType.OBJECT, obj.id) : registerEventParameter(obj)
     }]);
 
-    gameIsPlaying = (blockBuilder: RuleBlocksBuilder) => this.whenRule('GAME_IS_PLAYING', blockBuilder);
+    gameIsPlaying = (blockBuilder: AbilityBlocksBuilder) => this.whenRule('GAME_IS_PLAYING', blockBuilder);
 }
 
 export class Rule {
     type: RuleType;
     parameters: any[];
-    blocks: Block[];
+    ability: Ability;
     id: string;
     objectId: string;
 
-    constructor(type: RuleType, objectId: string, blocks: Block[], parameters: any[]) {
+    constructor(type: RuleType, objectId: string, ability: Ability, parameters: any[]) {
         this.type = type;
         this.objectId = objectId;
         this.parameters = parameters;
-        this.blocks = blocks;
+        this.ability = ability;
         this.id = v4();
         rules.push(this);
     }
