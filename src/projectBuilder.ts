@@ -16,7 +16,7 @@ export class ProjectBuilder {
         const output = {
             scenes: [],
             objects: [],
-            eventParams: eventParams.map(eventParam => ({
+            eventParameters: eventParams.map(eventParam => ({
                 description: eventParam.description,
                 id: eventParam.id,
                 blockType: eventParam.blockType,
