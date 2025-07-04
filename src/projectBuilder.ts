@@ -20,7 +20,7 @@ export class ProjectBuilder {
                 description: eventParam.description,
                 id: eventParam.id,
                 blockType: eventParam.blockType,
-                objectId: eventParam.objectId
+                objectID: eventParam.objectId
             })),
             abilities: abilities.map(ability => ({
                 blocks: ability.blocks.map(block => ({
@@ -62,12 +62,10 @@ export class ProjectBuilder {
                 object.rules.forEach(rule => {
                     output.rules.push({
                         ruleBlockType: getRule(rule.type).id,
-                        type: getRule(rule.type).id, // I cant seem to find an example where these are different?
                         abilityID: rule.ability.id,
                         id: rule.id,
                         parameters: rule.parameters ?? [],
                         objectID: rule.objectId,
-                        name: "", // todo
                     });
                 });
             });
