@@ -1,19 +1,38 @@
 import { getHSObject } from "./data/objects";
 import { abilities, eventParams } from "./globals";
-import { Scene } from "./scene";
+import { Scene, SceneCollectionBuilder } from "./scene";
 import { getBlock } from "./data/blocks";
 import { getRule } from "./data/rule";
 
-export class ProjectBuilder {
+interface StageSize {
+    width: number,
+    height: number
+}
+
+interface ProjectInitData {
+    stageSize: StageSize
+}
+
+export type ProjectScenesBuilder = (SceneCollectionBuilder: SceneCollectionBuilder) => void;
+
+export class Project {
+    stageSize: StageSize;
     scenes: Scene[] = [];
 
-    addScene(scene: Scene) {
-        this.scenes.push(scene);
-        return this;
+    constructor(scenesBuilder: ProjectScenesBuilder, data?: ProjectInitData) {
+        this.stageSize = {
+            width: 1000,
+            height: 1000,
+            ...data?.stageSize
+        }
+        const builder = new SceneCollectionBuilder(this);
+        scenesBuilder(builder);
+        this.scenes = builder.scenes;
     }
 
     serialize() {
         const output = {
+            stageSize: this.stageSize,
             scenes: [],
             objects: [],
             eventParameters: eventParams.map(eventParam => ({
@@ -51,8 +70,8 @@ export class ProjectBuilder {
                     height: 0, //todo
                     text: '', //todo
                     resizeScale: 0, //todo
-                    xPosition: 0, //todo
-                    yPosition: 0, //todo
+                    xPosition: object.data.xPosition,
+                    yPosition: object.data.yPosition,
 
                     name: object.data.name,
                     type: getHSObject(object.type).id,
@@ -65,7 +84,7 @@ export class ProjectBuilder {
                         abilityID: rule.ability.id,
                         id: rule.id,
                         parameters: rule.parameters ?? [],
-                        objectID: rule.objectId,
+                        objectID: rule.parentObject.id,
                     });
                 });
             });
