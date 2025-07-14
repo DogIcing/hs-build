@@ -14,7 +14,7 @@ export type HSObjectRulesBuilder = (ruleCollectionBuilder: RuleCollectionBuilder
 
 export class HSObjectCollectionBuilder {
     objects: HSObject[] = [];
-    scene: Scene;
+    private scene: Scene;
 
     constructor(scene: Scene) {
         this.scene = scene;

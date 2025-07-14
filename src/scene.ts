@@ -6,7 +6,7 @@ export type SceneObjectsBuilder = (HSObjectCollectionBuilder: HSObjectCollection
 
 export class SceneCollectionBuilder {
     scenes: Scene[] = [];
-    project: Project;
+    private project: Project;
 
     constructor(project: Project) {
         this.project = project;

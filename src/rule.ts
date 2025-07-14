@@ -15,7 +15,7 @@ export type RuleAbilitiesBuilder = (abilityCollectionBuilder: AbilityCollectionB
 type ObjectParameter = HSObject | EventParameterType.SELF | EventParameterType.ORIGINAL_OBJECT;
 
 export class RuleCollectionBuilder {
-    parentObject: HSObject;
+    private parentObject: HSObject;
     rules: Rule[] = [];
 
     constructor(parentObject: HSObject) {
