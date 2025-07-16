@@ -8,6 +8,7 @@ export function parameterBuilder<T = string>(type: ParameterType, value: T | Dat
     };
     else return {
         type: type as number,
-        defaultValue, value, datum
+        value: value.toString(),
+        defaultValue, datum
     };
 }

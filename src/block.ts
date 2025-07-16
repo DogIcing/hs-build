@@ -17,7 +17,7 @@ export class BlockCollectionBuilder {
     increaseVariable(variable: Variable, count: number) {
         this.blocks.push(new Block('INCREASE_VARIABLE', [
             parameterBuilder(ParameterType.Variable, variable, 'by'),
-            parameterBuilder(ParameterType.VariableValue, count)
+            parameterBuilder(ParameterType.VariableValue, count.toString())
         ]));
     }
 
@@ -25,6 +25,13 @@ export class BlockCollectionBuilder {
         this.blocks.push(new Block('SET_TEXT', [
             parameterBuilder<string>(ParameterType.SetText, text, 'to'),
             parameterBuilder(ParameterType.LineColor, color, 'color')
+        ]));
+    }
+
+    setPosition(x: NumberParameter, y: NumberParameter) {
+        this.blocks.push(new Block('SET_POSITION', [
+            parameterBuilder<number>(ParameterType.MultiPurposeNumberDefault, x, 'to x'),
+            parameterBuilder<number>(ParameterType.MultiPurposeNumberDefault, y, 'y'),
         ]));
     }
 }
@@ -40,3 +47,4 @@ export class Block {
 }
 
 type StringParameter = string | DatumSerializableParameter;
+type NumberParameter = number | DatumSerializableParameter;

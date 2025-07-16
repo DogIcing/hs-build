@@ -1,3 +1,6 @@
 export { Project } from './project'
 export { Scene } from './scene'
 export { Rule } from './rule'
+export * as Math from './math'
+export * as Traits from './traits'
+export * as Utils from './util/public'
