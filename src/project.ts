@@ -3,6 +3,7 @@ import { abilities, eventParams } from "./globals";
 import { Scene, SceneCollectionBuilder } from "./scene";
 import { getBlock } from "./data/blocks";
 import { getRule } from "./data/rule";
+import { Variable, VariableCollectionBuilder } from "./variable";
 
 interface StageSize {
     width: number,
@@ -13,11 +14,12 @@ interface ProjectInitData {
     stageSize: StageSize
 }
 
-export type ProjectScenesBuilder = (SceneCollectionBuilder: SceneCollectionBuilder) => void;
+export type ProjectScenesBuilder = (SceneCollectionBuilder: SceneCollectionBuilder, VariableCollectionBuilder: VariableCollectionBuilder) => void;
 
 export class Project {
     stageSize: StageSize;
     scenes: Scene[] = [];
+    variables: Variable[];
 
     constructor(scenesBuilder: ProjectScenesBuilder, data?: ProjectInitData) {
         this.stageSize = {
@@ -25,13 +27,16 @@ export class Project {
             height: 1000,
             ...data?.stageSize
         }
-        const builder = new SceneCollectionBuilder(this);
-        scenesBuilder(builder);
-        this.scenes = builder.scenes;
+        const sceneBuilder = new SceneCollectionBuilder(this);
+        const variableBuilder = new VariableCollectionBuilder();
+        scenesBuilder(sceneBuilder, variableBuilder);
+        this.scenes = sceneBuilder.scenes;
+        this.variables = variableBuilder.variables;
     }
 
     serialize() {
         const output = {
+            version: 34,
             stageSize: this.stageSize,
             scenes: [],
             objects: [],
@@ -53,6 +58,13 @@ export class Project {
                 name: ability.name
             })),
             rules: [],
+            variables: this.variables.map(v => ({
+                objectIdString: v.objectIdString,
+                name: v.name,
+                type: v.type
+            })),
+            playerVersion: '2.1.1',
+            playerUpgrades: {}
         }
 
         this.scenes.forEach(scene => {
@@ -66,8 +78,8 @@ export class Project {
                 output.objects.push({
                     objectID: object.id,
                     rotation: 0, //todo
-                    width: 0, //todo
-                    height: 0, //todo
+                    width: '150', //todo
+                    height: '150', //todo
                     text: '', //todo
                     resizeScale: 0, //todo
                     xPosition: object.data.xPosition,

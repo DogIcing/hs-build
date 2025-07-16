@@ -1,8 +1,13 @@
 import { ParameterType } from "./data/parameterType";
+import { DatumSerializableParameter } from "./datumSerializableParameter";
 
-export function parameterBuilder(type: ParameterType, value: string, key?: string, datum?: any, defaultValue?: string) {
-    return {
+export function parameterBuilder<T = string>(type: ParameterType, value: T | DatumSerializableParameter, key?: string, datum?: any, defaultValue?: string) {
+    if (typeof value === 'object' && 'serializeDatum' in value) return {
         type: type as number,
-        defaultValue, value, key, datum
-    }
+        defaultValue, value: '', key, datum: value.serializeDatum()
+    };
+    else return {
+        type: type as number,
+        defaultValue, value, datum
+    };
 }
