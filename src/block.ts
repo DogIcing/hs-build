@@ -14,6 +14,13 @@ export class BlockCollectionBuilder {
         ]));
     }
 
+    increaseVariable(variable: Variable, count: number) {
+        this.blocks.push(new Block('INCREASE_VARIABLE', [
+            parameterBuilder(ParameterType.Variable, variable, 'by'),
+            parameterBuilder(ParameterType.VariableValue, count)
+        ]));
+    }
+
     setText(text: StringParameter, color: string) {
         this.blocks.push(new Block('SET_TEXT', [
             parameterBuilder<string>(ParameterType.SetText, text, 'to'),
