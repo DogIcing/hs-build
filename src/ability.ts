@@ -12,7 +12,6 @@ export class AbilityCollectionBuilder {
         const builder = new BlockCollectionBuilder();
         blockBuilder(builder);
         const ability = new Ability(builder.blocks, name);
-        this.abilities.push(ability);
         return ability;
     }
 }
